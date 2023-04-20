@@ -23,28 +23,21 @@ int main(int ac, char **av, char **ep)
 	{
 		args = split_line(line, delim);
 		if (!args[0])
-			after_execute(args, prompt);
-		else if (args_count(args) < 3)
+
+		after_execute(args, prompt);
+		pid = fork();
+		if (pid == -1)
+			handle_error_execute("fork");
+		if (pid == 0)
 		{
-			pid = fork();
-			if (pid == -1)
-				handle_error_execute("fork");
-			if (pid == 0)
-			{
-				if (execve(args[0], args, ep) == -1)
-					handle_error_execute("./shell");
-				else
-					exit(EXIT_SUCCESS);
-			}
+			if (execve(args[0], args, ep) == -1)
+				handle_error_execute("./shell");
 			else
-			{
-				wait(&status);
-				after_execute(args, prompt);
-			}
+				exit(EXIT_SUCCESS);
 		}
 		else
 		{
-			printf("./shell: No such file or directory\n");
+			wait(&status);
 			after_execute(args, prompt);
 		}
 	}
