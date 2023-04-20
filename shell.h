@@ -1,6 +1,14 @@
 #ifndef SHELL_H
 #define SHELL_H
 
+/** ===== C Header Files =====  */
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 /** ===== Global Variables ===== */
 extern char **environ;
 
@@ -16,8 +24,8 @@ extern char **environ;
  */
 typedef struct path_s
 {
-  char *name;
-  struct path_s *next;
+	char *name;
+	struct path_s *next;
 } path_t;
 
 /** ===== End Structures ===== */
@@ -33,9 +41,19 @@ void free_paths_list(path_t *head);
 
 /** === Line Utility === */
 char **split_line(char *line, char *delim);
+char *resize_word(char **arr, char *word, int *word_size);
+char **resize_arr(char **arr, int *arr_size, char *word);
+void print_prompt(char *prompt);
 
-/** === Environment Handler === */
+/** === Environment Utility === */
 char *_getenv(const char *name);
 int _setenv(const char *name, const char *value, int overwrite);
+
+/** === Execution Utility === */
+int args_count(char **args);
+void free_args(char **args);
+void free_line(char *line);
+void after_execute(char **args, char *prompt);
+void handle_error_execute(char *cause);
 
 #endif /* SHELL_H */
