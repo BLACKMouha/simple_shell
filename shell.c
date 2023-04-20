@@ -24,7 +24,7 @@ int main(int ac, char **av, char **ep)
 		args = split_line(line, delim);
 		if (!args[0])
 			after_execute(args, prompt);
-		else if (args_count(args) == 1)
+		else if (args_count(args) < 3)
 		{
 			pid = fork();
 			if (pid == -1)
