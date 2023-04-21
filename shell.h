@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+
 
 /** ===== Global Variables ===== */
 extern char **environ;
@@ -33,11 +35,13 @@ typedef struct path_s
 
 /** ===== Function Prototypes ===== */
 
-/** === PATH Handler === */
+/** === PATH Environment Variable Utility === */
 int print_paths_list(const path_t *h);
 path_t *add_path_end(path_t **head, char *path);
 path_t *create_paths_list(void);
 void free_paths_list(path_t *head);
+char *_which(const char *filename);
+char *_memset(char *s, char b, unsigned int n);
 
 /** === Line Utility === */
 char **split_line(char *line, char *delim);

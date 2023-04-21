@@ -8,7 +8,8 @@
  */
 void after_execute(char **args, char *prompt)
 {
-	free_args(args);
+	if (args)
+		free_args(args);
 	print_prompt(prompt);
 }
 

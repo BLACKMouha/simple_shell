@@ -8,9 +8,11 @@
  * @ep: array of strings for environment variables  passed to the program
  * Return: On success EXIT_SUCCESS, on failure EXIT_FAILURE.
  */
+
 int main(int ac, char **av, char **ep)
 {
-	char *line = NULL, **args = NULL, *delim = " \n", *prompt = "#cisfun$ ";
+	char *line = NULL, **args = NULL, *delim = " \n", *prompt = "$ ";
+	char *bin = NULL;
 	size_t n = 0;
 	ssize_t chars = 0;
 	int status;
@@ -22,23 +24,41 @@ int main(int ac, char **av, char **ep)
 	while ((chars = getline(&line, &n, stdin)) != -1)
 	{
 		args = split_line(line, delim);
-		if (!args[0])
-
-		after_execute(args, prompt);
-		pid = fork();
-		if (pid == -1)
-			handle_error_execute("fork");
-		if (pid == 0)
+		if (args == NULL || args[0] == NULL)
 		{
-			if (execve(args[0], args, ep) == -1)
-				handle_error_execute("./shell");
-			else
-				exit(EXIT_SUCCESS);
+			print_prompt(prompt);
+			fflush(stdout);
 		}
 		else
 		{
-			wait(&status);
-			after_execute(args, prompt);
+			bin = _which(args[0]);
+			if (bin != NULL)
+			{
+				pid = fork();
+				if (pid == -1)
+					handle_error_execute("fork");
+				if (pid == 0)
+				{
+					execve(bin, args, ep);
+					perror("./shell");
+					free_args(args);
+					exit(EXIT_FAILURE);
+				}
+				else
+				{
+					wait(&status);
+					printf("%s", prompt);
+					fflush(stdout);
+					free(bin);
+					free_args(args);
+				}
+			}
+			else
+			{
+				printf("./shell: No such file or directory\n");
+				free_args(args);
+				print_prompt(prompt);
+			}
 		}
 	}
 	return (free_line(line), EXIT_SUCCESS);

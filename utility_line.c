@@ -11,7 +11,7 @@
 void print_prompt(char *prompt)
 {
 	if (!prompt)
-		printf("#cisfun$ ");
+		printf("$ ");
 	else
 	{
 		if (isatty(STDIN_FILENO))
@@ -38,7 +38,7 @@ char **split_line(char *line, char *delim)
 	arr = malloc(arr_size * sizeof(char *));
 	if (!arr)
 		return (NULL);
-	word = calloc(word_size, sizeof(char));
+	word = malloc(word_size * sizeof(char));
 	if (!word)
 		return (free(arr), NULL);
 
@@ -67,6 +67,8 @@ char **split_line(char *line, char *delim)
 			return (free(arr), free(word), NULL);
 		k++;
 	}
+	if (!arr)
+		return (free(arr), NULL);
 	arr[k] = NULL;
 	return (free(word), arr);
 }
