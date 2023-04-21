@@ -33,7 +33,7 @@ void child_action(char **args, char **ep, char *bin)
 void parent_action(char **args, char *bin, char *prompt, int *status)
 {
 	wait(status);
-	printf("%s", prompt);
+	print_prompt(prompt);
 	fflush(stdout);
 	free(bin);
 	free_args(args);
