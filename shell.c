@@ -36,29 +36,17 @@ int main(int ac, char **av, char **ep)
 			{
 				pid = fork();
 				if (pid == -1)
-					handle_error_execute("fork");
-				if (pid == 0)
 				{
-					execve(bin, args, ep);
-					perror("./shell");
-					free_args(args);
+					perror("fork");
 					exit(EXIT_FAILURE);
 				}
+				if (pid == 0)
+					child_action(args, ep, bin);
 				else
-				{
-					wait(&status);
-					printf("%s", prompt);
-					fflush(stdout);
-					free(bin);
-					free_args(args);
-				}
+					parent_action(args, bin, prompt, &status);
 			}
 			else
-			{
-				printf("./shell: No such file or directory\n");
-				free_args(args);
-				print_prompt(prompt);
-			}
+				not_executed(args, prompt);
 		}
 	}
 	return (free_line(line), EXIT_SUCCESS);

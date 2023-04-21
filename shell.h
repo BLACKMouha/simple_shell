@@ -17,8 +17,8 @@ extern char **environ;
 /** ===== Structures ===== */
 
 /**
- * strutct path_s - linked list for the paths in the PATH environment variable
- * @nname: path name;
+ * struct path_s - linked list for the paths in the PATH environment variable
+ * @name: path name;
  * @next: points to the next node
  *
  * Description: a structure for store paths defined in the environment variable
@@ -54,10 +54,11 @@ char *_getenv(const char *name);
 int _setenv(const char *name, const char *value, int overwrite);
 
 /** === Execution Utility === */
+void child_action(char **args, char **ep, char *bin);
+void parent_action(char **args, char *bin, char *prompt, int *status);
+void not_executed(char **args, char *prompt);
 int args_count(char **args);
 void free_args(char **args);
 void free_line(char *line);
-void after_execute(char **args, char *prompt);
-void handle_error_execute(char *cause);
 
 #endif /* SHELL_H */

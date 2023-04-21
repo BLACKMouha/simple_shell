@@ -34,12 +34,6 @@ char *_which(const char *filename)
 		if (!full_path)
 			return (free(path), NULL);
 		sprintf(full_path, "%s/%s", dir, filename);
-		/*
-		strcat(full_path, dir);
-		strcat(full_path, "/");
-		strcat(full_path, filename);
-		full_path[len_bin + len_dir + 2] = '\0';
-		*/
 		if (stat(full_path, &st) == 0)
 			return (free(path), full_path);
 		free(full_path);

@@ -1,25 +1,54 @@
 #include "shell.h"
 
 /**
- * after_execute - common statements to execute after execve returns
- * Prototype: void after_execute(char **args, char *prompt);
- * @args: an array of strings holding the different elements of a command line
- * @prompt: string to use as prompt to print
+ * child_action - is called by a child process, executes a command-line and
+ * handles error if any.
+ *
+ * Prototype: void parent_action(char **args, char **ep, char *bin);
+ * @args: command-line to execute
+ * @ep: a pointer to the environment of the program
+ * @bin: executable
  */
-void after_execute(char **args, char *prompt)
+void child_action(char **args, char **ep, char *bin)
 {
-	if (args)
-		free_args(args);
-	print_prompt(prompt);
+	execve(bin, args, ep);
+	perror("./shell");
+	free_args(args);
+	exit(EXIT_FAILURE);
+
 }
 
 /**
- * handle_error_execute - handles error during execution
- * Prototype: void handle_error_execute(char *cause);
- * @cause: the function name related to the error;
+ * parent_action - is called by a parent process to wait for its children,
+ * clean resources and displays a prompt for waiting a new command-line
+ *
+ * Prototype: void parent_action(char **args, char *bin, char *prompt,
+ * int *status);
+ *
+ * @args: command-line to execute
+ * @bin: executable
+ * @prompt: prompt to display
+ * @status: returned value by one of its children
  */
-void handle_error_execute(char *cause)
+void parent_action(char **args, char *bin, char *prompt, int *status)
 {
-	perror(cause);
-	exit(EXIT_FAILURE);
+	wait(status);
+	printf("%s", prompt);
+	fflush(stdout);
+	free(bin);
+	free_args(args);
+}
+
+/**
+ * not_executed - handles unknown executable
+ * Prototype: void not_executed(char **args, char *prompt);
+ * @args: command-line
+ * @prompt: prompt to display
+ */
+void not_executed(char **args, char *prompt)
+{
+	fflush(stdout);
+	printf("./shell: No such file or directory\n");
+	print_prompt(prompt);
+	free_args(args);
 }

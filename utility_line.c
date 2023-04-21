@@ -41,7 +41,6 @@ char **split_line(char *line, char *delim)
 	word = malloc(word_size * sizeof(char));
 	if (!word)
 		return (free(arr), NULL);
-
 	for (i = 0; line[i]; i++)
 	{
 		while (line[i] && strchr(delim, line[i]) != 0)
@@ -68,7 +67,7 @@ char **split_line(char *line, char *delim)
 		k++;
 	}
 	if (!arr)
-		return (free(arr), NULL);
+		return (free(arr), free(word), NULL);
 	arr[k] = NULL;
 	return (free(word), arr);
 }
